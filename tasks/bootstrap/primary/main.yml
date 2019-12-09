@@ -1,2 +1,2 @@
 ---
-- include_tasks: install_stack.yml
+- include_tasks: install_stack_timeout.yml

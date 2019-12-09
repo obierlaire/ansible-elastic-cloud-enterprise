@@ -1,9 +1,43 @@
 ---
-- name: Execute the primary installation
-  shell: /home/elastic/elastic-cloud-enterprise.sh install --availability-zone {{ availability_zone }} --cloud-enterprise-version {{ ece_version }} --docker-registry {{ ece_docker_registry }} --ece-docker-repository {{ ece_docker_repository }} --memory-settings '{{ memory_settings }}'
+- name: Handle the error
+  block:
+    - name: Execute the primary installation
+      shell: /home/elastic/elastic-cloud-enterprise.sh install --availability-zone {{ availability_zone }} --cloud-enterprise-version {{ ece_version }} --docker-registry {{ ece_docker_registry }} --ece-docker-repository {{ ece_docker_repository }} --memory-settings '{{ memory_settings }} |& tee /tmp/install_primary.log'
+      async: 1000
+      poll: 0
+      register: primary_installation
+    - name: 'check on async task'
+      async_status:
+        jid: "{{ primary_installation.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 15
+    - name: Debug primary installation async
+      debug: 
+        msg: "{{ job_result }}"
+    - name: Debug primary installation
+      debug: 
+        msg: "{{ primary_installation }}"
   become: yes
   become_method: sudo
   become_user: elastic
+  rescue:
+    - command: "cat /tmp/install_primary.log"
+      register: install_primary_log
+      ignore_errors: yes
+    - command: "cat {{ job_result.results_file }}"
+      register: results_file
+      ignore_errors: yes
+    - debug:
+        msg: "{{ job_result }}"
+      ignore_errors: yes
+    - debug:
+        var: install_primary_log
+      ignore_errors: yes
+    - fail:
+        msg: "{{ results_file }}"
+        
+
 
 - name: Remember the bootstrap secrets
   command: cat /mnt/data/elastic/bootstrap-state/bootstrap-secrets.json
