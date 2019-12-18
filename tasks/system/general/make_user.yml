@@ -61,3 +61,13 @@
     line: 'elastic ALL=(ALL) NOPASSWD:ALL'
     state: present
     create: true
+
+- name: set boot user
+  copy:
+    dest: /etc/cloud/cloud.cfg.d/00-elastic.cfg
+    content: |
+      #cloud-config
+      system_info:
+        default_user:
+          name: elastic
+

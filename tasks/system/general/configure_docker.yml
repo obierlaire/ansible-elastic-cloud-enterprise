@@ -14,6 +14,19 @@
     src: docker{{ docker_version }}.conf
     dest: /etc/systemd/system/docker.service.d/docker.conf
 
+- name: restart docker systemd
+  systemd:
+    name: docker
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: stop docker systemd
+  systemd:
+    name: docker
+    state: stopped
+    enabled: false
+
 - name: Remove var/lib/docker
   file:
     path: /var/lib/docker

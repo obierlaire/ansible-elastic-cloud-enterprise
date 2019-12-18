@@ -23,12 +23,22 @@
 - include_tasks: general/setup_xfs.yml
   tags: [setup_filesystem, destructive]
   when: ansible_lvm['vgs']['lxc'] is not defined or force_xfc == true
+- include_tasks: general/setup_mount_permissions.yml
+
 - include_tasks: general/update_grub_docker.yml
   tags: [setup_filesystem, destructive]
 - include_tasks: general/configure_docker.yml
   tags: [install_docker, destructive]
 - include_tasks: general/sysctl_scripts.yml
 - include_tasks: general/kernel_modules.yml
+
+- name: Check disk structure
+  command: df -h
+  register: dfresult
+
+- name: debug disk structure
+  debug:
+    var: dfresult
 
 - name: Reboot the machine with all defaults
   shell: sleep 2 && shutdown -r now "Reboot for changes to take effect"
@@ -43,4 +53,10 @@
     delay: 5
     timeout: 600
 
-- include_tasks: general/setup_mount_permissions.yml
+- name: Check disk structure
+  command: df -h
+  register: dfresult
+
+- name: debug disk structure
+  debug:
+    var: dfresult

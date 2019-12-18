@@ -1,5 +1,5 @@
 ---
-docker_unit_after: "basic.target"
+docker_unit_after: network.target docker.socket
 docker_storage_driver: aufs
 bootloader_update_command: update-grub
 

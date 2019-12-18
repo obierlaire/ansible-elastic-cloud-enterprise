@@ -1,4 +1,14 @@
 ---
+- name: remove docker
+  apt:
+    name: 
+      - docker 
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent
+
 - name: Add docker repository key
   apt_key:
     url: "{{ docker_version_map[docker_version]['keys']['server'] }}"

@@ -42,10 +42,24 @@
     line: "{{ item }}"
   with_items:
     - '/dev/lxc/swap swap       swap  swap  0 0'
-    - '/dev/lxc/data /mnt/data  xfs   defaults,pquota,prjquota,x-systemd.automount  0 0'
+    - '/dev/lxc/data /mnt/data  xfs   defaults,pquota,prjquota,x-systemd.automount  0 2'
+
+- name: Regenerate the mount file
+  systemd:
+    name: local-fs.target
+    state: restarted
+    daemon_reload: true
 
 - name: Mount /dev/lxc/data
   command: mount /dev/lxc/data
+
+- name: Check disk structure
+  command: df -h
+  register: dfresult
+
+- name: debug disk structure
+  debug:
+    var: dfresult
 
 - name: Enable all swap devices
   command: swapon -a
