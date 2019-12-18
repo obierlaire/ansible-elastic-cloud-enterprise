@@ -11,10 +11,9 @@
 
 - name: Install docker
   apt:
-    name: "{{ item }}"
+    name: "{{ docker_version_map[docker_version]['package'] }}"
     update_cache: yes
     state: present
-  with_items: "{{ docker_version_map[docker_version]['package'] }}"
 
 - name: Pin docker-engine packet
   shell: echo "docker-engine hold" | sudo dpkg --set-selections
