@@ -2,8 +2,5 @@
 - include_tasks: system/main.yml
   tags: [system]
 
-- include_tasks: bootstrap/main.yml
-  tags: [ece]
-
 - include_tasks: diagnostics/main.yml
   when: fetch_diagnostics == true
