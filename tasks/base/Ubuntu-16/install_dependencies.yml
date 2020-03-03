@@ -3,8 +3,11 @@
   apt:
     name: "{{ packages }}"
     update_cache: yes
+    install_recommends: yes
     state: present
   vars:
     packages:
+    - linux-image-generic
+    - linux-generic
     - linux-generic-lts-xenial
     - xfsprogs
