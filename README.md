@@ -62,6 +62,7 @@ The following variables are avaible:
 - `ece_primary`: Whether this host should be the primary (first) host where Elastic Cloud Enterprise is installed
     - **Required** on a single host
 - `data_dir`: Which directory to mount the xfs partition under
+    - Default: `/mnt/data`
 - `ece_roles`: Elastic Cloud Enterprise roles that successive hosts should assume
     - Default: [director, coordinator, proxy, allocator]
 - `availability_zone`: The availability zone this group of hosts belongs to
